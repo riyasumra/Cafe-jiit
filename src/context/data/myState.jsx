@@ -110,26 +110,34 @@ function MyState(props) {
     setProducts("")
   }
 
-  const deleteProduct = async (item) => {
-
+  const deleteProduct = async (title) => {
     try {
-      setLoading(true)
-      await deleteDoc(doc(fireDB, "products", item.id));
-      toast.success('Product Deleted successfully')
-      setLoading(false)
-      getProductData()
+      setLoading(true);
+      const productSnapshot = await getDocs(query(collection(fireDB, "products"), where("title", "==", title)));
+      if (!productSnapshot.empty) {
+        const productDoc = productSnapshot.docs[0];
+        await deleteDoc(productDoc.ref);
+        toast.success('Product Deleted successfully');
+        setLoading(false);
+        getProductData();
+      } else {
+        toast.error('Product not found');
+        setLoading(false);
+      }
     } catch (error) {
-      // toast.success('Product Deleted Falied')
-      setLoading(false)
+      toast.error('Product Deletion Failed');
+      setLoading(false);
+      console.error(error);
     }
-  }
+  };
+  
 
   const [order, setOrder] = useState([]);
 
   const getOrderData = async () => {
     setLoading(true)
     try {
-      const result = await getDocs(collection(fireDB, "order"))
+      const result = await getDocs(collection(fireDB, "orders"))
       const ordersArray = [];
       result.forEach((doc) => {
         ordersArray.push(doc.data());

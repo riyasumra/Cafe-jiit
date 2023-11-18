@@ -4,8 +4,10 @@ import Layout from '../../components/layout/Layout';
 import Modal from '../../components/modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteFromCart } from '../../redux/cartSlice';
+import { clearCart } from '../../redux/cartSlice';
 import { toast } from 'react-toastify';
 import { addDoc, collection } from 'firebase/firestore';
+import { fireDB } from '../../firebase/FirebaseConfig';
 import ReceiptModal from '../../components/modal/ReceiptModal';
 
 
@@ -121,9 +123,49 @@ function Cart() {
   }
 
   const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [isReceiptClosed, setIsReceiptClosed] = useState(true);
 
-  const handlePayOnCounter = () => {
-    setShowReceiptModal(true);
+  // const handlePayOnCounter = () => {
+  //   setShowReceiptModal(true);
+  // };
+
+  const handlePayOnCounter = async () => {
+    try {
+      // Logic for processing payment on counter...
+      setShowReceiptModal(true);
+      setIsReceiptClosed(false);
+      // Example order information (replace this with your actual order information)
+      const orderInfo = {
+        cartItems,
+        totalAmount,
+        date: new Date().toLocaleString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }),
+        email: JSON.parse(localStorage.getItem("users")).user.email,
+        userid: JSON.parse(localStorage.getItem("users")).user.uid
+        
+      };
+
+      // Store order info in the Firebase database
+      await addDoc(collection(fireDB, "orders"), orderInfo);
+
+      // dispatch(clearCart()); 
+      // localStorage.removeItem('cart'); 
+      
+      // Close the receipt modal after storing the order
+      //setShowReceiptModal(false);
+    } catch (error) {
+      console.error("Error placing order:", error);
+    }
+  };
+
+  const handleReceiptClose = () => {
+    //setShowReceiptModal(false);
+    setIsReceiptClosed(true);
+    dispatch(clearCart()); // Clear cart in Redux state
+    localStorage.removeItem('cart'); // Clear local storage
   };
 
 
@@ -172,7 +214,12 @@ function Cart() {
               </button>
               
             </div>
-            {showReceiptModal && <ReceiptModal cartItems={cartItems} totalAmount={totalAmount} closeModal={() => setShowReceiptModal(false)} />}
+            {!isReceiptClosed && <ReceiptModal
+             isOpen={showReceiptModal}
+             cartItems={cartItems} 
+             totalAmount={totalAmount} 
+             closeModal={handleReceiptClose} />}
+            
             <div className="flex justify-center mb-3">
               <p className="text-lg font-bold" style={{ color: mode === 'dark' ? 'white' : '' }}>OR</p>
               

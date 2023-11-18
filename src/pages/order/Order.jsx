@@ -1,20 +1,32 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import myContext from '../../context/data/myContext'
 import Layout from '../../components/layout/Layout'
 import Loader from '../../components/loader/Loader'
+// import { fireDB } from '../../firebase/FirebaseConfig';
 
 function Order() {
   const userid = JSON.parse(localStorage.getItem('users')).user.uid
-  const context = useContext(myContext)
+  const [context] = useContext(myContext)
   const { mode, loading, order } = context
+  const [counterOrders, setCounterOrders] = useState([]);
+
+  useEffect(() => {
+    // Filter orders with payment method 'Pay on Counter'
+    const filteredOrders = order.filter(
+      (order) => order.userid === userid && order.paymentMethod === 'Pay on Counter'
+    );
+    setCounterOrders(filteredOrders);
+  }, [order, userid]);
+  
+
   return (
     <Layout>
       {loading && <Loader />}
-      {order.length > 0 ?
+      {counterOrders.length > 0 ?
         (<>
           <div className=" h-full pt-10">
             {
-              order.filter(obj => obj.userid == userid).map((order) => {
+              counterOrders.map((order) => {
                 // order.cartItems.map()
                 return (
                   <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">

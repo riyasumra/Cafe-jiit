@@ -10,10 +10,13 @@ const cartSlice = createSlice({
         },
         deleteFromCart(state, action) {
             return state.filter(item => item.id != action.payload.id);
-        }
+        },
+        clearCart(state) {
+            return []; // Resetting the cart to an empty array
+          },
     }
 })
 
-export const { addToCart, deleteFromCart } = cartSlice.actions
+export const { addToCart, deleteFromCart, clearCart } = cartSlice.actions
 
 export default cartSlice.reducer;
