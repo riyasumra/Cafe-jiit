@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Cafe-jiit/static/css/main.8c8d2e94.css",
+    "main.js": "/Cafe-jiit/static/js/main.e44eb495.js",
+    "static/js/787.271d3eb8.chunk.js": "/Cafe-jiit/static/js/787.271d3eb8.chunk.js",
+    "static/media/logo.png": "/Cafe-jiit/static/media/logo.bebae44d2ce736ce7fed.png",
+    "index.html": "/Cafe-jiit/index.html",
+    "main.8c8d2e94.css.map": "/Cafe-jiit/static/css/main.8c8d2e94.css.map",
+    "main.e44eb495.js.map": "/Cafe-jiit/static/js/main.e44eb495.js.map",
+    "787.271d3eb8.chunk.js.map": "/Cafe-jiit/static/js/787.271d3eb8.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8c8d2e94.css",
+    "static/js/main.e44eb495.js"
+  ]
+}
